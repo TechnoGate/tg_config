@@ -1,3 +1,4 @@
+require "yaml"
 require "active_support/core_ext/hash/indifferent_access"
 require "tg_config/errors"
 require "tg_config/version"
@@ -87,16 +88,7 @@ module TechnoGate
     #
     # @return [HashWithIndifferentAccess] The config
     def parse_config_file
-      begin
-        parsed_yaml = YAML.parse_file config_file
-      rescue Psych::SyntaxError => e
-        raise NotValidError,
-          "Not valid YAML file: #{e.message}."
-      end
-      raise NotValidError,
-        "Not valid YAML file: The YAML does not respond_to to_ruby." unless parsed_yaml.respond_to?(:to_ruby)
-
-      parsed_yaml.to_ruby.with_indifferent_access
+      YAML.load_file(config_file).with_indifferent_access
     end
 
     # Write the config file

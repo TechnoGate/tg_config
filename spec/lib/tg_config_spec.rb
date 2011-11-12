@@ -5,9 +5,7 @@ describe TgConfig do
     @config = {:submodules => [:pathogen]}
     @config_path = '/valid/path'
     @invalid_config_path = '/invalid/path'
-    @yaml = mock
-    @yaml.stubs(:to_ruby).returns(@config)
-    Psych.stubs(:parse_file).with(@config_path).returns(@yaml)
+    YAML.stubs(:load_file).with(@config_path).returns(@config)
     TgConfig.send(:class_variable_set, :@@config_file, @config_path)
 
     ::File.stubs(:exists?).with(@config_path).returns(true)
@@ -131,18 +129,6 @@ describe TgConfig do
     it "should parse the config file and return an instance of HashWithIndifferentAccess" do
       subject.send(:parse_config_file).should be_instance_of HashWithIndifferentAccess
     end
-
-    it "should handle the case where config is not a valid YAML file." do
-      Psych.stubs(:parse_file).raises(Psych::SyntaxError)
-
-      lambda { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
-    end
-
-    it "should handle the case where Psych returns nil." do
-      Psych.stubs(:parse_file).with(@config_path).returns(nil)
-
-      lambda { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
-    end
   end
 
   describe "#[]" do
@@ -166,35 +152,35 @@ describe TgConfig do
 
   describe "#[]=" do
     after(:each) do
-      TgConfig.class_variable_set('@@config', nil)
+      TgConfig.send(:class_variable_set, :@@config, nil)
     end
 
     it { should respond_to :[]= }
 
     it "should set the new config in @@config" do
       subject[:submodules] = [:pathogen, :github]
-      subject.class_variable_get('@@config')[:submodules].should ==
+      subject.send(:class_variable_get, :@@config)[:submodules].should ==
         [:pathogen, :github]
     end
   end
 
   describe "#write_config_file" do
     before(:each) do
-      subject.class_variable_set('@@config', @config)
-      subject.class_variable_get('@@config').stubs(:to_hash).returns(@config)
+      subject.send(:class_variable_set, :@@config, @config)
+      subject.send(:class_variable_get, :@@config).stubs(:to_hash).returns(@config)
     end
 
     it { should respond_to :write_config_file }
 
     it "should call to_hash on @@config" do
-      subject.class_variable_get('@@config').expects(:to_hash).returns(@config).once
+      subject.send(:class_variable_get, :@@config).expects(:to_hash).returns(@config).once
 
       subject.send :write_config_file
     end
 
     it "should call to_yaml on @@config.to_hash" do
       @config.expects(:to_yaml).returns(@config.to_yaml).twice # => XXX: Why twice ?
-      subject.class_variable_get('@@config').stubs(:to_hash).returns(@config)
+      subject.send(:class_variable_get, :@@config).stubs(:to_hash).returns(@config)
 
       subject.send :write_config_file
     end
@@ -213,7 +199,7 @@ describe TgConfig do
     end
 
     it "should raise TgConfig::IsEmptyError" do
-      subject.class_variable_set('@@config', nil)
+      subject.send(:class_variable_set, :@@config, nil)
 
       lambda { subject.send :write_config_file }.should raise_error TgConfig::IsEmptyError
     end
@@ -221,8 +207,8 @@ describe TgConfig do
 
   describe "#save" do
     before(:each) do
-      subject.class_variable_set('@@config', @config)
-      subject.class_variable_get('@@config').stubs(:to_hash).returns(@config)
+      subject.send(:class_variable_set, :@@config, @config)
+      subject.send(:class_variable_get, :@@config).stubs(:to_hash).returns(@config)
     end
 
     it { should respond_to :save }
