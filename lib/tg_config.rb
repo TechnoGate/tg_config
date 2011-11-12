@@ -65,6 +65,7 @@ module TechnoGate
     #
     # @return [HashWithIndifferentAccess] The config
     def parse_config_file
+      # XXX: We should handle errors
       YAML.load_file(config_file).with_indifferent_access
     end
 
