@@ -1,5 +1,5 @@
 module TechnoGate
-  module TgConfig
+  class TgConfig
     TgConfigError = Class.new Exception
 
     NotReadableError = Class.new TgConfigError

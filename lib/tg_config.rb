@@ -4,14 +4,15 @@ require "tg_config/errors"
 require "tg_config/version"
 
 module TechnoGate
-  module TgConfig
-    extend self
+  class TgConfig
 
-    # Define the config class variable
-    @@config = nil
+    attr_reader :config_file
 
-    # Define the config file
-    @@config_file = nil
+    def initialize(config_file)
+      @config_file = config_file
+      check_config_file
+      @config = parse_config_file
+    end
 
     # Return a particular config variable from the parsed config file
     #
@@ -19,12 +20,7 @@ module TechnoGate
     # @return mixed
     # @raise [Void]
     def [](config)
-      if @@config.nil?
-        check_config_file
-        @@config ||= parse_config_file
-      end
-
-      @@config.send(:[], config)
+      @config.send(:[], config)
     end
 
     # Update the config file
@@ -32,28 +28,7 @@ module TechnoGate
     # @param [String] config
     # @param [Mixed] Values
     def []=(config, value)
-      if @@config.nil?
-        check_config_file
-        @@config ||= parse_config_file
-      end
-
-      @@config.send(:[]=, config, value)
-    end
-
-    # Get the config file
-    #
-    # @return [String] Absolute path to the config file
-    def config_file
-      raise ConfigFileNotSetError unless @@config_file
-
-      @@config_file
-    end
-
-    # Set the config file
-    #
-    # @param [String] Absolute path to the config file
-    def config_file=(config_file)
-      @@config_file = config_file
+      @config.send(:[]=, config, value)
     end
 
     # Save the config file
@@ -67,9 +42,8 @@ module TechnoGate
     protected
     # Initialize the configuration file
     def initialize_config_file
-      File.open(config_file, 'w') do |f|
-        f.write ""
-      end
+      @config = HashWithIndifferentAccess.new
+      write_config_file
     end
 
     # Check the config file
@@ -93,9 +67,9 @@ module TechnoGate
 
     # Write the config file
     def write_config_file
-      raise IsEmptyError unless @@config
+      raise IsEmptyError unless @config
       File.open config_file, 'w' do |f|
-        f.write(@@config.to_hash.to_yaml)
+        f.write(@config.to_hash.to_yaml)
       end
     end
   end
