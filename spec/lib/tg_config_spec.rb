@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TgConfig do
   before(:each) do
-    @config = {submodules: [:pathogen]}
+    @config = {:submodules => [:pathogen]}
     @config_path = '/valid/path'
     @invalid_config_path = '/invalid/path'
     @yaml = mock
