@@ -26,13 +26,13 @@ describe TgConfig do
 
   describe "@@config" do
     it "should have a class_variable @@config" do
-      -> { subject.send(:class_variable_get, :@@config) }.should_not raise_error NameError
+      lambda { subject.send(:class_variable_get, :@@config) }.should_not raise_error NameError
     end
   end
 
   describe "@@config_file" do
     it "should have a class_variable @@config_file" do
-      -> {subject.send(:class_variable_get, :@@config_file) }.should_not raise_error NameError
+      lambda {subject.send(:class_variable_get, :@@config_file) }.should_not raise_error NameError
     end
   end
 
@@ -48,7 +48,7 @@ describe TgConfig do
     it "should raise ConfigFileNotSetError if @@config_file is not set" do
       subject.send(:class_variable_set, :@@config_file, nil)
 
-      -> { subject.config_file }.should raise_error TgConfig::ConfigFileNotSetError
+      lambda { subject.config_file }.should raise_error TgConfig::ConfigFileNotSetError
     end
   end
 
@@ -96,14 +96,14 @@ describe TgConfig do
       TgConfig.stubs(:config_file).returns(@invalid_config_path)
       ::File.stubs(:readable?).with(@invalid_config_path).returns(false)
 
-      -> { subject.send(:check_config_file) }.should raise_error TgConfig::NotReadableError
+      lambda { subject.send(:check_config_file) }.should raise_error TgConfig::NotReadableError
     end
 
     it "should raise TgConfig::NotWritableError if config not readable" do
       TgConfig.stubs(:config_file).returns(@config_path)
       ::File.stubs(:writable?).with(@config_path).returns(false)
 
-      -> { subject.send(:check_config_file, true) }.should raise_error TgConfig::NotWritableError
+      lambda { subject.send(:check_config_file, true) }.should raise_error TgConfig::NotWritableError
     end
 
   end
@@ -135,13 +135,13 @@ describe TgConfig do
     it "should handle the case where config is not a valid YAML file." do
       Psych.stubs(:parse_file).raises(Psych::SyntaxError)
 
-      -> { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
+      lambda { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
     end
 
     it "should handle the case where Psych returns nil." do
       Psych.stubs(:parse_file).with(@config_path).returns(nil)
 
-      -> { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
+      lambda { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
     end
   end
 
@@ -215,7 +215,7 @@ describe TgConfig do
     it "should raise TgConfig::IsEmptyError" do
       subject.class_variable_set('@@config', nil)
 
-      -> { subject.send :write_config_file }.should raise_error TgConfig::IsEmptyError
+      lambda { subject.send :write_config_file }.should raise_error TgConfig::IsEmptyError
     end
   end
 
