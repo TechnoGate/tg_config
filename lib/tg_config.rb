@@ -1,3 +1,6 @@
+require "rubygems"
+require "bundler/setup"
+
 require "yaml"
 require "active_support/core_ext/hash/indifferent_access"
 require "tg_config/errors"
