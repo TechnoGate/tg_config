@@ -7,5 +7,6 @@ module TechnoGate
     NotWritableError = Class.new TgConfigError
     NotValidError = Class.new TgConfigError
     IsEmptyError = Class.new TgConfigError
+    ConfigFileNotSetError = Class.new TgConfigError
   end
 end

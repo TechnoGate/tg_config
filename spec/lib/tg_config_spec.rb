@@ -8,7 +8,7 @@ describe TgConfig do
     @yaml = mock
     @yaml.stubs(:to_ruby).returns(@config)
     Psych.stubs(:parse_file).with(@config_path).returns(@yaml)
-    TgConfig.stubs(:config_file).returns(@config_path)
+    TgConfig.send(:class_variable_set, :@@config_file, @config_path)
 
     ::File.stubs(:exists?).with(@config_path).returns(true)
     ::File.stubs(:readable?).with(@config_path).returns(true)
@@ -25,8 +25,30 @@ describe TgConfig do
   end
 
   describe "@@config" do
-    it "should have and class_variable @@config" do
+    it "should have a class_variable @@config" do
       -> { subject.send(:class_variable_get, :@@config) }.should_not raise_error NameError
+    end
+  end
+
+  describe "@@config_file" do
+    it "should have a class_variable @@config_file" do
+      -> {subject.send(:class_variable_get, :@@config_file) }.should_not raise_error NameError
+    end
+  end
+
+  describe "#config_file" do
+    it { should respond_to :config_file }
+
+    it "should return @@config_file" do
+      subject.send(:class_variable_set, :@@config_file, @invalid_config_path)
+
+      subject.config_file.should == @invalid_config_path
+    end
+
+    it "should raise ConfigFileNotSetError if @@config_file is not set" do
+      subject.send(:class_variable_set, :@@config_file, nil)
+
+      -> { subject.config_file }.should raise_error TgConfig::ConfigFileNotSetError
     end
   end
 

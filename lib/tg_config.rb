@@ -9,6 +9,9 @@ module TechnoGate
     # Define the config class variable
     @@config = nil
 
+    # Define the config file
+    @@config_file = nil
+
     # Return a particular config variable from the parsed config file
     #
     # @param [String|Symbol] config
@@ -40,7 +43,9 @@ module TechnoGate
     #
     # @return [String] Absolute path to the config file
     def config_file
-      File.join(ENV["HOME"], 'vimius.yml')
+      raise ConfigFileNotSetError unless @@config_file
+
+      @@config_file
     end
 
     # Save the config file
