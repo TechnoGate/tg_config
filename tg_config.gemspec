@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
 
   # Active Support
   s.add_dependency 'activesupport', '~>3.1.1'
-  s.add_dependency 'i18n', '~>0.6.0'
 
   ####
   # Development dependencies
