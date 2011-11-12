@@ -48,6 +48,13 @@ module TechnoGate
       @@config_file
     end
 
+    # Set the config file
+    #
+    # @param [String] Absolute path to the config file
+    def config_file=(config_file)
+      @@config_file = config_file
+    end
+
     # Save the config file
     def save
       # Make sure the config file is writable

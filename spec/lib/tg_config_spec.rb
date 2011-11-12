@@ -52,6 +52,15 @@ describe TgConfig do
     end
   end
 
+  describe "#config_file=" do
+    it { should respond_to :config_file= }
+
+    it "should set @@config_file" do
+      subject.config_file = @invalid_config_path
+      subject.config_file.should == @invalid_config_path
+    end
+  end
+
   describe "#check_config_file" do
     before(:each) do
       TgConfig.stubs(:initialize_config_file)
