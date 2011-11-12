@@ -1,4 +1,4 @@
-require "active_support/core_ext"
+require "active_support/core_ext/hash/indifferent_access"
 require "tg_config/errors"
 require "tg_config/version"
 
