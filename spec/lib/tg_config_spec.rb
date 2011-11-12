@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TgConfig do
   before(:each) do
-    @config = {vimius: {submodules: [:pathogen]}}
+    @config = {submodules: [:pathogen]}
     @config_path = '/valid/path'
     @invalid_config_path = '/invalid/path'
     @yaml = mock
@@ -112,15 +112,6 @@ describe TgConfig do
 
       -> { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
     end
-
-    it "should handle the case where :vimius key does not exist" do
-      config = {}
-      yaml = mock
-      yaml.stubs(:to_ruby).returns(config)
-      Psych.stubs(:parse_file).with(@config_path).returns(yaml)
-
-      -> { subject.send :parse_config_file }.should raise_error TgConfig::NotValidError
-    end
   end
 
   describe "#[]" do
@@ -151,7 +142,7 @@ describe TgConfig do
 
     it "should set the new config in @@config" do
       subject[:submodules] = [:pathogen, :github]
-      subject.class_variable_get('@@config')[:vimius][:submodules].should ==
+      subject.class_variable_get('@@config')[:submodules].should ==
         [:pathogen, :github]
     end
   end

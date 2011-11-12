@@ -20,7 +20,7 @@ module TechnoGate
         @@config ||= parse_config_file
       end
 
-      @@config[:vimius].send(:[], config)
+      @@config.send(:[], config)
     end
 
     # Update the config file
@@ -33,7 +33,7 @@ module TechnoGate
         @@config ||= parse_config_file
       end
 
-      @@config[:vimius].send(:[]=, config, value)
+      @@config.send(:[]=, config, value)
     end
 
     # Get the config file
@@ -83,11 +83,8 @@ module TechnoGate
       end
       raise NotValidError,
         "Not valid YAML file: The YAML does not respond_to to_ruby." unless parsed_yaml.respond_to?(:to_ruby)
-      config = parsed_yaml.to_ruby.with_indifferent_access
-      raise NotValidError,
-        "Not valid YAML file: It doesn't contain vimius root key." unless config.has_key?(:vimius)
 
-      config
+      parsed_yaml.to_ruby.with_indifferent_access
     end
 
     # Write the config file
