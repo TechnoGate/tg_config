@@ -2,7 +2,7 @@ module TechnoGate
   class TgConfig
     MAJOR = 0
     MINOR = 1
-    TINY = 1
+    TINY = 2
     PRE = ''
 
     def self.version
