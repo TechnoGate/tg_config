@@ -2,7 +2,7 @@ require "rubygems"
 require "bundler/setup"
 
 require "yaml"
-require "active_support/core_ext/hash/indifferent_access"
+require "active_support/core_ext"
 require "tg_config/errors"
 require "tg_config/version"
 
@@ -23,6 +23,10 @@ module TechnoGate
     # @return mixed
     # @raise [Void]
     def [](config)
+      unless @config
+        check_config_file
+        @config = parse_config_file
+      end
       @config.send(:[], config)
     end
 
@@ -31,6 +35,10 @@ module TechnoGate
     # @param [String] config
     # @param [Mixed] Values
     def []=(config, value)
+      unless @config
+        check_config_file
+        @config = parse_config_file
+      end
       @config.send(:[]=, config, value)
     end
 

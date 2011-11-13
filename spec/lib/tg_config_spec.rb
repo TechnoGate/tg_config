@@ -25,6 +25,10 @@ describe TgConfig do
     ::File.stubs(:open).with(config_path, 'w').yields(@file_handler)
   end
 
+  after(:each) do
+    subject.send(:instance_variable_set, :@config, nil)
+  end
+
   describe "#config_file" do
     it { should respond_to :config_file }
 
@@ -66,12 +70,16 @@ describe TgConfig do
       ::File.stubs(:readable?).with(config_path).returns(false)
 
       lambda { subject.send(:check_config_file) }.should raise_error TgConfig::NotReadableError
+
+      ::File.stubs(:readable?).with(config_path).returns(true)
     end
 
     it "should raise TgConfig::NotWritableError if config not readable" do
       ::File.stubs(:writable?).with(config_path).returns(false)
 
       lambda { subject.send(:check_config_file, true) }.should raise_error TgConfig::NotWritableError
+
+      ::File.stubs(:writable?).with(config_path).returns(true)
     end
 
   end
@@ -111,19 +119,43 @@ describe TgConfig do
     it "should return [:pathogen] for submodules" do
       subject[:submodules].should == [:pathogen]
     end
+
+    it "should call check_config_file if @config is nil" do
+      subject.send(:instance_variable_set, :@config, nil)
+      subject.expects(:check_config_file).once
+
+      subject[:submodules]
+    end
+
+    it "should call parse_config_file if @config is nil" do
+      subject.send(:instance_variable_set, :@config, nil)
+      subject.expects(:parse_config_file).returns(config.with_indifferent_access).once
+
+      subject[:submodules]
+    end
   end
 
   describe "#[]=" do
-    after(:each) do
-      subject.send(:instance_variable_set, :@config, nil)
-    end
-
     it { should respond_to :[]= }
 
     it "should set the new config in @config" do
       subject[:submodules] = [:pathogen, :github]
       subject.send(:instance_variable_get, :@config)[:submodules].should ==
         [:pathogen, :github]
+    end
+
+    it "should call check_config_file if @config is nil" do
+      subject.send(:instance_variable_set, :@config, nil)
+      subject.expects(:check_config_file).once
+
+      subject[:submodules] = {}
+    end
+
+    it "should call parse_config_file if @config is nil" do
+      subject.send(:instance_variable_set, :@config, nil)
+      subject.expects(:parse_config_file).returns(config.with_indifferent_access).once
+
+      subject[:submodules] = {}
     end
   end
 
