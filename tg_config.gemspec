@@ -51,6 +51,9 @@ Gem::Specification.new do |s|
   # Mocha
   s.add_development_dependency 'mocha', '~>0.10.0'
 
+  # Rake
+  s.add_development_dependency 'rake'
+
   ####
   # Debugging
   ####
