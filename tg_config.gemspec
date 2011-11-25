@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   ####
 
   # Bundler
-  s.add_dependency 'bundler', '~>1.0.0'
+  s.add_dependency 'bundler', '>=1.0.0'
 
   # Active Support
   s.add_dependency 'activesupport', '~>3.1.1'
