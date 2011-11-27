@@ -34,12 +34,12 @@ Gem::Specification.new do |s|
   ####
 
   # Guard
-  s.add_development_dependency 'guard', '~>0.8.4'
-  s.add_development_dependency 'guard-bundler', '~>0.1.3'
-  s.add_development_dependency 'guard-rspec', '~>0.4.5'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-bundler'
+  s.add_development_dependency 'guard-rspec'
 
   # Documentation
-  s.add_development_dependency 'yard', '~>0.7.2'
+  s.add_development_dependency 'yard'
 
   ####
   # Development / Test dependencies
@@ -49,7 +49,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~>2.6.0'
 
   # Mocha
-  s.add_development_dependency 'mocha', '~>0.10.0'
+  s.add_development_dependency 'mocha'
 
   # Rake
   s.add_development_dependency 'rake'
@@ -57,5 +57,5 @@ Gem::Specification.new do |s|
   ####
   # Debugging
   ####
-  s.add_development_dependency 'pry', '~>0.9.6.2'
+  s.add_development_dependency 'pry'
 end
